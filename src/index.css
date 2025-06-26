@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.sidebar-link:hover {
+  background-color: #f0f4ff; /* atau warna lain sesuai keinginan */
+  color: #5542F6 !important;
+}
+
+body {
+  background-color: #f5f6fa; /* abu-abu muda, bisa diganti sesuai selera */
+}
+
+.initializeBody {
+  background-color: #5542F6;
+}
