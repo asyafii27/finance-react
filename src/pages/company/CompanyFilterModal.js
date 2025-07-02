@@ -53,8 +53,8 @@ function CompanyFilterModal({ show, onClose, onFilter, initialFilter = {} }) {
                 </div>
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="submit" className="btn btn-warning btn-sm fw-bold text-white">
+            <div className="d-flex justify-content-end p-3">
+              <button type="submit" className="btn btn-warning fw-bold text-white">
                 <i class="bi bi-search"></i> Terapkan
               </button>
             </div>

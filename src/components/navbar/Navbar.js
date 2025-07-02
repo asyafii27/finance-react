@@ -1,7 +1,19 @@
 import React from 'react';
 import SearchBar from './SearchBar';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Navbar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setTimeout(() => {
+      navigate('/login')
+    }, 1000);
+    
+    toast.success('Logout berhasil!');
+  }
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow rounded mb-4 px-4 py-3">
       <div className="container-fluid">
@@ -27,14 +39,16 @@ function Navbar() {
               <hr className="dropdown-divider" />
             </li>
             <li>
-              <a className="dropdown-item text-danger" href="#logout">
+              <button className="dropdown-item text-danger" onClick={handleLogout} >
                 <i className="bi bi-box-arrow-right me-2"></i> Logout
-              </a>
+              </button>
             </li>
           </ul>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </nav>
+
   );
 }
 

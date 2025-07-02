@@ -32,7 +32,15 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+::placeholder {
+  color: #6c757d !important;
+  /* Warna dari Bootstrap's text-muted */
+  opacity: 1;
+  /* Pastikan tidak terlalu transparan */
 }

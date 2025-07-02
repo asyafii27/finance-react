@@ -6,6 +6,7 @@ import Pagination from '../../components/pagination/Pagination';
 import CardHeader from '../../components/navbar/CardHeaderTitle';
 import CreateCompanyModal from './CompanyCreate.js';
 import CompanyFilterModal from './CompanyFilterModal.js';
+import { ToastContainer, toast } from 'react-toastify';
 
 const columns = [
     { key: 'code', label: 'Kode' },
@@ -64,6 +65,7 @@ function CompanyPage() {
             .then((res) => res.json())
             .then((result) => {
                 setShowModal(false);
+                toast.success(result.message || 'Data berhasil ditambahkan');
                 // Refresh data setelah sukses create
                 return fetch('http://localhost:3000/master/companies')
                     .then((res) => res.json())
@@ -75,7 +77,7 @@ function CompanyPage() {
             .catch(() => {
                 setLoading(false);
                 setShowModal(false);
-                alert('Gagal menambah data perusahaan');
+                toast.error('Gagal menambahkan data');
             });
     };
 
@@ -134,10 +136,16 @@ function CompanyPage() {
             fetch(`${process.env.REACT_APP_URL_SERVER}/master/companies/${row.id}`, {
                 method: 'DELETE',
             })
-                .then((res) => res.json())
-                .then(() => {
-                    // Refresh data setelah sukses hapus
-                    let listUrl = `${process.env.REACT_APP_URL_SERVER}/master/companies?page=${page}&limit=${limit}`;
+                .then(async (res) => {
+                    const result = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(result.message || 'Gagal menghapus data');
+                    }
+
+                    toast.success(result.message || 'Data berhasil dihapus');
+
+                    const listUrl = `${process.env.REACT_APP_URL_SERVER}/master/companies?page=${page}&limit=${limit}`;
                     return fetch(listUrl)
                         .then((res) => res.json())
                         .then((result) => {
@@ -145,10 +153,11 @@ function CompanyPage() {
                             setLoading(false);
                         });
                 })
-                .catch(() => {
+                .catch((err) => {
                     setLoading(false);
-                    alert('Gagal menghapus data perusahaan');
+                    toast.error(err.message || 'Gagal menghapus data');
                 });
+
         }
     }
 
@@ -169,11 +178,12 @@ function CompanyPage() {
                     title={isEdit ? "Edit Perusahaan" : "Tambah Perusahaan"}
                 />
                 <CompanyFilterModal
+                    key={JSON.stringify(filter)}
                     show={showFilter}
                     onClose={() => setShowFilter(false)}
                     onFilter={(f) => {
                         setFilter(f);
-                        setPage(1); // reset ke halaman 1 jika filter berubah
+                        setPage(1);
                     }}
                     initialFilter={filter}
                 />
@@ -187,25 +197,28 @@ function CompanyPage() {
                             />
                             <div className="card-body">
                                 <div className="row mb-2">
-                                    <div className="col-2">
+                                    <div className="col-auto">
                                         <button
                                             className="btn btn-warning fw-bold rounded text-white"
                                             onClick={() => setShowFilter(true)}
                                         >
-                                            <i class="bi bi-funnel"></i>Filter
+                                            <i className="bi bi-funnel"></i> Filter
                                         </button>
                                     </div>
-                                    <div className="col-10">
-                                        <div id="activeFilter" className="ms-2 mb-1 d-flex align-items-center gap-2">
+                                    <div className="col-auto">
+                                        <div
+                                            id="activeFilter"
+                                            className="ms-2 mb-1 d-flex align-items-center gap-2"
+                                        >
                                             {/* Render filter aktif di sini */}
                                             {filter.nama && (
                                                 <span className="border rounded px-3 py-1 bg-white">
-                                                    <span className="text-dark">Perusahaan:</span> {filter.nama}
+                                                    <span className="text-dark fw-semibold">Perusahaan:</span> {filter.nama}
                                                 </span>
                                             )}
                                             {filter.code && (
                                                 <span className="border rounded px-3 py-1 bg-white">
-                                                    <span className="text-dark">Kode:</span> {filter.code}
+                                                    <span className="text-dark fw-semibold">Kode:</span> {filter.code}
                                                 </span>
                                             )}
                                             {(filter.nama || filter.code) && (
@@ -215,12 +228,13 @@ function CompanyPage() {
                                                     onClick={() => setFilter({ nama: "", code: "" })}
                                                     title="Hapus filter"
                                                 >
-                                                    ×
+                                                    X
                                                 </button>
                                             )}
                                         </div>
                                     </div>
                                 </div>
+
                                 <div className="row">
                                     <TableData
                                         columns={columns}
@@ -232,8 +246,8 @@ function CompanyPage() {
                                     />
                                 </div>
                             </div>
+                            <Pagination page={page} totalPages={totalPages} totalData={totalData} onPageChange={setPage} />
                         </div>
-                        <Pagination page={page} totalPages={totalPages} totalData={totalData} onPageChange={setPage} />
                     </div>
                 )}
             </div>

@@ -21,7 +21,7 @@ function CreateCompanyModal({ show, onClose, onSubmit, initialData, title = "Tam
 
   return (
     <div className="modal d-block" tabIndex="-1" style={{ background: 'rgba(0,0,0,0.3)' }}>
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{title}</h5>
@@ -30,7 +30,7 @@ function CreateCompanyModal({ show, onClose, onSubmit, initialData, title = "Tam
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
               <div className="mb-3">
-                <label className="form-label">Nama Perusahaan</label>
+                <label className="form-label fw-semibold">Nama Perusahaan</label>
                 <input
                   type="text"
                   className="form-control"
@@ -42,7 +42,7 @@ function CreateCompanyModal({ show, onClose, onSubmit, initialData, title = "Tam
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Kode/Alias</label>
+                <label className="form-label fw-semibold">Kode/Alias</label>
                 <input
                   type="text"
                   className="form-control"
@@ -54,11 +54,11 @@ function CreateCompanyModal({ show, onClose, onSubmit, initialData, title = "Tam
               </div>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-sm btn-secondary" onClick={onClose}>
-                <i className="bi bi-arrow-left-square"></i> Batal
+              <button type="button" className="btn btn-secondary" onClick={onClose}>
+                 Batal
               </button>
-              <button type="submit" className="btn btn-sm btn-primary">
-                <i className="bi bi-floppy"></i> Simpan
+              <button type="submit" className="btn btn-warning fw-semibold text-white">
+                Simpan
               </button>
             </div>
           </form>
