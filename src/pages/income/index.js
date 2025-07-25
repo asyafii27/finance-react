@@ -1,47 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import TableData from '../../components/Table';
+import { FaFilter, FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
 import Sidebar from '../../components/sidebar';
 import Navbar from '../../components/navbar/Navbar';
 import Pagination from '../../components/pagination/Pagination';
 import CardHeader from '../../components/navbar/CardHeaderTitle';
-import CreateCompanyModal from './CompanyCreate.js';
-import CompanyFilterModal from './CompanyFilterModal.js';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toast } from 'bootstrap';
+import { toast } from 'react-toastify';
 import axios from 'axios';
+import TableData from '../../components/Table';
 
 const columns = [
-    { key: 'code', label: 'Kode' },
-    { key: 'nama', label: 'Nama Perusahaan' },
-];
+    { key: 'transaction_code', label: 'Kode Transaksi' },
+    { key: 'tanggal', label: 'Tanggal' },
+    { key: 'user_name', label: 'Pengaju' },
+    { key: 'tipe_name', label: 'Tipe' },
+    { key: 'company_code', label: 'Perusahaan' },
+    { key: 'divisi_name', label: 'Divisi' },
+    { key: 'category_name', label: 'Kategori' },
+    { key: 'produk_name', label: 'Produk' },
+    { key: 'website_name', label: 'Nama Website' },
+    { key: 'nominal_after_admin_fee', label: 'Nominal' },
+    {
+        key: 'rekening_code', label: 'Rekening', render: (row) => (
+            <>
+                <div>{row.rekening_code || '-'}</div>
+                <div className="text-muted small">{row.rekening_nomor || '-'}</div>
+            </>
+        )
+    },
 
-function CompanyPage() {
-    const [data, setData] = useState([]);
+]
+
+function IncomePage() {
+    const [data, setDatate] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [totalData, setTotalData] = useState(10);
-    const [showModal, setShowModal] = useState(false);
-    const [editData, setEditData] = useState(null);
-    const [isEdit, setIsEdit] = useState(false);
-    const [showFilter, setShowFilter] = useState(false);
     const [filter, setFilter] = useState({ nama: "", code: "" });
+    const [showFilter, setShowFilter] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
 
     const fetchData = async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            console.log('Fetching data with token:', token);
 
             const params = {
                 page,
                 limit,
-                ...(filter.nama && { nama: filter.nama }),
-                ...(filter.code && { code: filter.code }),
+                ...(filter.transaction_code && { transaction_code: filter.transaction_code }),
+                ...(filter.start_date && { start_date: filter.start_date }),
+                ...(filter.end_date && { end_date: filter.start_date }),
             };
-
-            const res = await axios.get(
-                `${process.env.REACT_APP_URL_SERVER}/master/companies`,
+            const res = await axios.get(`
+                ${process.env.REACT_APP_URL_SERVER}/finance/incomes`,
                 {
                     params,
                     headers: {
@@ -50,114 +65,35 @@ function CompanyPage() {
                 }
             );
 
-            setData(res.data.data || []);
+            setDatate(res.data.data || []);
             setTotalPages(res.data.meta?.totalPages || 1);
             setTotalData(res.data.meta?.total || 1);
+
         } catch (error) {
+            toast.error('Gagal memuat data');
             console.error('Error fetching data:', error);
         } finally {
             setLoading(false);
         }
-    };
-
+    }
 
     useEffect(() => {
         fetchData();
     }, [page, limit, filter]);
-
-    const handleCreate = async (form) => {
-        setLoading(true);
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_URL_SERVER}/master/companies/create`, form);
-            toast.success(response.data.message || 'Data berhasil ditambahkan');
-            setShowModal(false);
-            fetchData();
-        } catch (error) {
-            if (error.response?.data) {
-                return error.response.data;
-            } else {
-                toast.error('Gagal menambahkan data');
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleEdit = (row) => {
-        setEditData(row);
-        setIsEdit(true);
-        setShowModal(true);
-    };
-
-    const handleSubmit = async (form) => {
-        setLoading(true);
-        try {
-            if (isEdit && editData) {
-                const url = `${process.env.REACT_APP_URL_SERVER}/master/companies/edit/${editData.id}`;
-                await axios.put(url, form);
-                toast.success('Data berhasil diubah');
-                setShowModal(false);
-                setIsEdit(false);
-                setEditData(null);
-                fetchData();
-            } else {
-                return await handleCreate(form);
-            }
-        } catch (error) {
-            toast.error('Gagal menyimpan data');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDelete = async (row) => {
-        if (window.confirm(`Apakah Anda yakin ingin hapus data ini ${row.nama}?`)) {
-            setLoading(true);
-            try {
-                const res = await axios.delete(`${process.env.REACT_APP_URL_SERVER}/master/companies/${row.id}`);
-                toast.success(res.data.message || 'Data berhasil dihapus');
-                fetchData();
-            } catch (error) {
-                toast.error(error.response?.data?.message || 'Gagal menghapus data');
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
 
     return (
         <div className="d-flex" style={{ minHeight: '100vh' }}>
             <Sidebar />
             <div className="flex-grow-1">
                 <Navbar />
-                <CreateCompanyModal
-                    show={showModal}
-                    onClose={() => {
-                        setShowModal(false);
-                        setIsEdit(false);
-                        setEditData(null);
-                    }}
-                    onSubmit={handleSubmit}
-                    initialData={isEdit ? editData : undefined}
-                    title={isEdit ? "Edit Perusahaan" : "Tambah Perusahaan"}
-                />
-                <CompanyFilterModal
-                    key={JSON.stringify(filter)}
-                    show={showFilter}
-                    onClose={() => setShowFilter(false)}
-                    onFilter={(f) => {
-                        setFilter(f);
-                        setPage(1);
-                    }}
-                    initialFilter={filter}
-                />
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
-                    <div className="container">
+                    <div className="mx-5 my-5">
                         <div className="card shadow-sm">
                             <CardHeader
-                                onCreate={() => setShowModal(true)} cardTitle="List Perusahaan"
+                                onCreate={() => setShowModal(true)}
+                                cardTitle="List Pemasukkan"
                             />
                             <div className="card-body">
                                 <div className="row mb-2">
@@ -202,8 +138,8 @@ function CompanyPage() {
                                     <TableData
                                         columns={columns}
                                         data={data}
-                                        onEdit={handleEdit}
-                                        onDelete={handleDelete}
+                                        onEdit={''}
+                                        onDelete={''}
                                         page={page}
                                         limit={limit}
                                     />
@@ -218,4 +154,5 @@ function CompanyPage() {
     );
 }
 
-export default CompanyPage;
+export default IncomePage;
+

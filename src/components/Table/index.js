@@ -2,14 +2,13 @@ import React from 'react';
 
 function TableData({ columns, data, onEdit, onDelete, page = 1, limit = 10 }) {
   return (
-
     <div className="table-responsive">
       <table className="table table-striped table-hover align-middle mb-0">
         <thead className="table-light">
           <tr>
-            <th style={{ width: 60 }}>No.</th> {/* Tambahkan kolom No */}
+            <th style={{ width: 60 }}>No.</th>
             {columns.map((col) => (
-              <th key={col.key} >{col.label}</th>
+              <th key={col.key}>{col.label}</th>
             ))}
             {(onEdit || onDelete) && <th style={{ width: 120 }}>Action</th>}
           </tr>
@@ -19,15 +18,26 @@ function TableData({ columns, data, onEdit, onDelete, page = 1, limit = 10 }) {
             <tr
               key={row.id}
               style={{
-                background: idx % 2 === 0 ? '#fff' : '#ffffcc' // putih untuk genap, kuning untuk ganjil
+                background: idx % 2 === 0 ? '#fff' : '#ffffcc'
               }}
             >
-              <td className="fw-semibold">{(idx + 1) + ((page - 1) * limit)}.</td> {/* Nomor urut */}
+              <td className="fw-semibold">
+                {(idx + 1) + ((page - 1) * limit)}.
+              </td>
+
               {columns.map((col) => (
                 <td key={col.key} className={col.className || ''}>
-                  {row[col.key] || '-'}
+                  {col.key === 'rekening_code' ? (
+                    <>
+                      <div>{row.rekening_code || '-'}</div>
+                      <div className="text-muted small">{row.rekening_nomor || '-'}</div>
+                    </>
+                  ) : (
+                    row[col.key] || '-'
+                  )}
                 </td>
               ))}
+
               {(onEdit || onDelete) && (
                 <td>
                   {onEdit && (
@@ -52,9 +62,17 @@ function TableData({ columns, data, onEdit, onDelete, page = 1, limit = 10 }) {
               )}
             </tr>
           ))}
+
           {data.length === 0 && (
             <tr>
-              <td colSpan={columns.length + 1 + ((onEdit || onDelete) ? 1 : 0)} className="text-center text-muted">
+              <td
+                colSpan={columns.length + 1 + ((onEdit || onDelete) ? 1 : 0)}
+                className="text-center text-muted py-5"
+              >
+                <i
+                  className="bi bi-database-x d-block mb-3 text-muted"
+                  style={{ fontSize: '5rem' }}
+                ></i>
                 Tidak ada data
               </td>
             </tr>
@@ -64,5 +82,6 @@ function TableData({ columns, data, onEdit, onDelete, page = 1, limit = 10 }) {
     </div>
   );
 }
+
 
 export default TableData;

@@ -16,13 +16,19 @@ const data = [
 
 function MainContent() {
   return (
-    <div className="flex min-h-screen bg-gray-100 initializeBody"style={{backgroundColor: '#0E2148'}}>
-      <div className="d-flex" style={{ minHeight: '100vh' }}>
+    <div className="d-flex" style={{ minHeight: '100vh', backgroundColor: '#0E2148' }}>
+      {/* Sidebar kiri */}
+      <div style={{ width: '240px', backgroundColor: '#2d89ff' }}>
         <Sidebar />
-        <div className="flex-grow-1">
-          <Navbar />
-          {/* Konten utama di sini */}
-          <TableData columns={columns} data={data} />
+      </div>
+
+      {/* Konten utama */}
+      <div className="flex-grow-1 d-flex flex-column" style={{ backgroundColor: '#f8f9fa' }}>
+        <Navbar />
+
+        {/* Konten halaman */}
+        <div className="p-4">
+          <TableData />
         </div>
       </div>
     </div>

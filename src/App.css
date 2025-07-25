@@ -44,3 +44,36 @@
   opacity: 1;
   /* Pastikan tidak terlalu transparan */
 }
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.sidebar {
+  overflow-x: hidden;
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+.submenu-collapsed {
+  position: absolute;
+  top: 100%;
+  left: 70px;
+  min-width: 180px;
+  background: #0d6efd;
+  z-index: 999;
+  display: none;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.keuangan-toggle:hover+.submenu-collapsed,
+.master-toggle:hover+.submenu-collapsed {
+  display: block;
+}
+
+.submenu-collapsed .nav-link {
+  white-space: nowrap;
+}

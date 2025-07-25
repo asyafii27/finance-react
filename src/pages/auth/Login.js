@@ -24,6 +24,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
+
       const response = await fetch(baseUrl + '/login', {
         method: 'POST',
         headers: {
@@ -41,16 +42,18 @@ const LoginPage = () => {
         throw new Error(data.message || 'Login failed');
       }
 
+      localStorage.setItem('token', data.data.token);
+
       toast.success('Login berhasil!');
-      console.log('Login successful:', data);
+
       setTimeout(() => {
         navigate('/')
-      }, 1000); // delayy agar terlihat toast nya
+      }, 1000);
 
     } catch (error) {
       console.log(error);
-      setError('Error message: ' + error.message);
-      toast.error('Error: Segera hubungi administrator');
+
+      toast.error('Error: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -92,8 +95,8 @@ const LoginPage = () => {
           <div className="mb-3">
             <label className="form-label">Password</label>
             <div className="input-group">
-              <span className="input-group-text">
-                <i className="bi bi-lock-fill"></i>
+              <span className="input-group-text bg-white">
+                <i className="bi bi-lock-fill text-primary"></i>
               </span>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -104,11 +107,11 @@ const LoginPage = () => {
                 required
               />
               <span
-                className="input-group-text"
+                className="input-group-text bg-white"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <i className={`bi ${showPassword ? 'bi-eye-fill' : 'bi-eye-slash-fill'}`}></i>
+                <i className={`bi ${showPassword ? 'bi-eye-fill' : 'bi-eye-slash-fill'} text-primary`}></i>
               </span>
             </div>
           </div>
