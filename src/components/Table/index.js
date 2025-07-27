@@ -32,11 +32,14 @@ function TableData({ columns, data, onEdit, onDelete, page = 1, limit = 10 }) {
                       <div>{row.rekening_code || '-'}</div>
                       <div className="text-muted small">{row.rekening_nomor || '-'}</div>
                     </>
+                  ) : col.render ? (
+                    col.render(row)  // Gunakan custom render kalau ada
                   ) : (
                     row[col.key] || '-'
                   )}
                 </td>
               ))}
+
 
               {(onEdit || onDelete) && (
                 <td>

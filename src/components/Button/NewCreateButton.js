@@ -1,6 +1,6 @@
 import React from "react";
 
-function ButtonBuatBaru({ onClick }) {
+function NewCreateButton({ onClick }) {
     return (
         <button className="btn btn-primary fw-semibold" onClick={onClick}>
             <i className="bi bi-plus-lg"></i> Buat Baru
@@ -8,4 +8,4 @@ function ButtonBuatBaru({ onClick }) {
     );
 }
 
-export default ButtonBuatBaru;
+export default NewCreateButton;

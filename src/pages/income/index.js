@@ -8,10 +8,17 @@ import { Toast } from 'bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import TableData from '../../components/Table';
+import { dmyTwoDigitFormat } from '../../helpers/convert/time-convert';
+import { useNavigate } from "react-router-dom";
+
 
 const columns = [
     { key: 'transaction_code', label: 'Kode Transaksi' },
-    { key: 'tanggal', label: 'Tanggal' },
+    {
+        key: 'tanggal',
+        label: 'Tanggal',
+        render: (row) => dmyTwoDigitFormat(row.tanggal)
+    },
     { key: 'user_name', label: 'Pengaju' },
     { key: 'tipe_name', label: 'Tipe' },
     { key: 'company_code', label: 'Perusahaan' },
@@ -41,6 +48,7 @@ function IncomePage() {
     const [filter, setFilter] = useState({ nama: "", code: "" });
     const [showFilter, setShowFilter] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
 
     const fetchData = async () => {
@@ -91,10 +99,18 @@ function IncomePage() {
                 ) : (
                     <div className="mx-5 my-5">
                         <div className="card shadow-sm">
-                            <CardHeader
-                                onCreate={() => setShowModal(true)}
-                                cardTitle="List Pemasukkan"
-                            />
+                            <div className="card-header">
+                                <div class="d-flex justify-content-between align-items-center bg-light rounded">
+                                    <h5 className="fw-semibold">List Pemasukkan</h5>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary fw-semibold"
+                                        onClick={() => navigate("/income/create")}
+                                    >
+                                        <i className="bi bi-plus-lg"></i> Buat Baru
+                                    </button>
+                                </div>
+                            </div>
                             <div className="card-body">
                                 <div className="row mb-2">
                                     <div className="col-auto">
